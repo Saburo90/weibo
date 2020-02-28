@@ -9,7 +9,7 @@
       </div>
       <div class="card-body">
         <form method="POST" action="{{ route('users.store') }}">
-
+          {{ csrf_token() }}
 
           <div class="form-group">
             <label for="name">名称：</label>
