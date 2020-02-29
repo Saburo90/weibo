@@ -90,4 +90,11 @@ class UsersController extends Controller
         // 编辑用户信息成功，跳转至用户中心
         return redirect()->route('users.show', $user->id);
     }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        session()->flash('success', '成功删除用户！');
+        return back();
+    }
 }
