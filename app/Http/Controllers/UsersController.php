@@ -11,13 +11,21 @@ class UsersController extends Controller
     {
         // 使用laravel自带中间件Auth，进行登录访问权限控制
         $this->middleware('auth', [
-           'except' => ['create', 'show', 'store']
+           'except' => ['create', 'show', 'store', 'index']
         ]);
 
         // 使用guest中间件，限制仅未登录态可访问注册页
         $this->middleware('guest', [
             'only' => ['create']
         ]);
+    }
+
+    public function index()
+    {
+        // 分页展示用户列表
+        $users = User::paginate(10);
+//        $users = User::all();
+        return view('users.index', compact('users'));
     }
 
     public function create()
