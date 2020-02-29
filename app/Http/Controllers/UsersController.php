@@ -7,6 +7,19 @@ use Auth;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        // 使用laravel自带中间件Auth，进行登录访问权限控制
+        $this->middleware('auth', [
+           'except' => ['create', 'show', 'store']
+        ]);
+
+        // 使用guest中间件，限制仅未登录态可访问注册页
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     public function create()
     {
         return view('users.create');
@@ -44,11 +57,17 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        // 鉴权
+        $this->authorize('update', $user);
+
         return view('users.edit', compact('user'));
     }
 
     public function update(User $user, Request $request)
     {
+        // 鉴权
+        $this->authorize('update', $user);
+
         $this->validate($request, [
             'name' => 'required|max:50',
             'password' => 'nullable|confirmed|min:6'
