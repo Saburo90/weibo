@@ -136,4 +136,22 @@ class UsersController extends Controller
 
 
     }
+
+    public function followings(User $user)
+    {
+        // 获取当前用户的关注列表，分页展示，每页30条
+        $users = $user->followings()->paginate(30);
+        // 视图标题，关注与粉丝共用视图，区分关注与粉丝列表
+        $title = $user->name . '的关注';
+        return view('users.show_follow', compact('users', 'title'));
+    }
+
+    public function followers(User $user)
+    {
+        // 获取当前用户的粉丝列表，分页展示，每页30条
+        $users = $user->followers()->paginate(30);
+        // 视图标题，关注与粉丝共用视图，区分关注与粉丝列表
+        $title = $user->name . '的粉丝';
+        return view('users.show_follow', compact('users', 'title'));
+    }
 }
