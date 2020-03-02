@@ -64,7 +64,7 @@ class User extends Authenticatable
     public function feed()
     {
         // 首页展示用户及其所关注的用户动态
-        $user_ids = $this->followings()->pluck('id')->toArray();
+        $user_ids = $this->followings->pluck('id')->toArray();
         array_push($user_ids, $this->id);
 
         // with 关联模型 预加载解决n+1问题
