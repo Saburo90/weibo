@@ -63,7 +63,18 @@ class User extends Authenticatable
 
     public function feed()
     {
-        return $this->statuses()->orderBy('created_at', 'desc');
+        // 首页展示用户及其所关注的用户动态
+        $user_ids = $this->followings()->pluck('id')->toArray();
+        array_push($user_ids, $this->id);
+
+        // with 关联模型 预加载解决n+1问题
+        # 使用with关联模型之前
+        // select * from statuses; 1次查询n条微博数据
+        // select * from users where id = status.id; n次查询用户数据
+        # 使用with关联模型之后
+        // select * from statuses; 1次查询n条微博数据
+        // select * from users where id in (status.id1, status.id2, ...) 1次查询n条用户数据
+        return Status::whereIn('user_id', $user_ids)->with('user')->orderBy('created_at', 'desc');
     }
 
     // 粉丝模型
@@ -99,6 +110,7 @@ class User extends Authenticatable
 
     public function isFollowing($user_id)
     {
+        // 因模型中定义followings关联方法，所以可使用laravel的动态属性直接判断followings属性中是否含$user_id
         return $this->followings->contains($user_id);
     }
 }
